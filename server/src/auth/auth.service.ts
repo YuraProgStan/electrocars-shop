@@ -8,6 +8,7 @@ import {User} from "@prisma/client";
 import {TokenUserDto} from "./dto/token-user.dto";
 import {PrismaService} from "../core/prisma.service";
 import {MailService} from "../mail/mail.service";
+import {RefreshTokenUserDto} from "./dto/refresh-token-user.dto";
 
 
 @Injectable()
@@ -18,7 +19,17 @@ export class AuthService {
 
     async login(authDto: AuthUserDto) {
         const user = await this.validateUser(authDto);
-        return this.generateTokenPair(user);
+        if (!user.status) {
+            return {error: {message: `confirm your email on ${user.email}`}}
+        }
+        const tokenPair = this.generateTokenPair(user);
+        try {
+            const res = await this.prismaService.token.create({data: {userId: user.id, ...tokenPair}})
+        } catch (e) {
+            throw  new HttpException('something went wrong', HttpStatus.BAD_REQUEST)
+        }
+        delete user.password;
+        return {...tokenPair, ...user}
     }
 
     async registration(userDto: CreateUserDto) {
@@ -41,34 +52,50 @@ export class AuthService {
 
     }
 
-    async confirm(token: string) {
+    async confirm(token: string, res) {
         try {
             const user = await this.jwtService.verify(token, {publicKey: process.env.SECRET_ACTION_KEY});
 
             const findUser = await this.prismaService.user.findFirst({where: {id: user.id}});
-            if (findUser) {
-                console.log('error')
+            if (!findUser) {
+                res.status(302).redirect(`${process.env.CLIENT_API_URL}/registration`);
             }
-           await this.prismaService.user.update({
+            if (findUser.status) {
+                res.status(302).redirect(`${process.env.CLIENT_API_URL}/login`);
+            }
+            await this.prismaService.user.update({
                 where: {id: user.id},
                 data: {
                     status: true
                 }
             })
-            const tokens = this.generateTokenPair(findUser);
-            await this.createTokens(tokens, findUser.id)
-        } catch (e) {
-            console.log(e)
+            res.status(302).redirect(`${process.env.CLIENT_API_URL}/login`);
+        } catch (err) {
+            console.log(err)
+            res.status(302).redirect(`${process.env.CLIENT_API_URL}/registration`);
         }
     }
 
+    async refresh(dto: RefreshTokenUserDto, user) {
+        const tokenPair = this.generateTokenPair(user)
+        try {
+            await this.createTokens(tokenPair, user.id);
+            await this.prismaService.token.deleteMany({
+                where: {refreshToken: dto.refreshToken}
+            })
+        } catch (e) {
+            new HttpException('something went wrong', HttpStatus.BAD_REQUEST)
+        }
+
+        return tokenPair;
+    }
+
     async createTokens(tokensPair, userId) {
-        console.log(tokensPair);
         return await this.prismaService.token.create({data: {...tokensPair, userId}})
     }
 
 
-    generateTokenPair(user) {
+    private generateTokenPair(user) {
         const payload: TokenUserDto = {email: user.email, id: user.id, name: user.name, role: user.role};
         const accessToken = this.jwtService.sign(payload,
             {
@@ -108,16 +135,25 @@ export class AuthService {
         throw new UnauthorizedException({message: 'wrong email or password'})
     }
 
-    async getVerifiedUserId(jwt: string): Promise<string | null> {
+    async getVerifiedUserRefresh(jwt: string): Promise<string | null> {
         try {
-            const token = jwt.split(' ')[1];
-            const user = await this.jwtService.verify(token, {publicKey: process.env.SECRET_ACCESS_KEY});
-            return user.name;
-            //return user.role
-        } catch (e) {
-            console.log(e);
+            const user = await this.jwtService.verify(jwt, {publicKey: process.env.SECRET_REFRESH_KEY});
+            return user;
+        } catch (err) {
+            throw new UnauthorizedException({error: err})
         }
     }
+
+    // async getVerifiedUserId(jwt: string): Promise<string | null> {
+    //     try {
+    //         const token = jwt.split(' ')[1];
+    //         const user = await this.jwtService.verify(token, {publicKey: process.env.SECRET_ACCESS_KEY});
+    //         return user.name;
+    //         //return user.role
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
 
 
 }

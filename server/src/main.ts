@@ -12,6 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe())
   app.setGlobalPrefix('api');
+  app.useStaticAssets(join(__dirname, '..', 'images'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
 
@@ -24,7 +25,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/swagger',  app, document);
 
-
+  app.enableCors();
   await app.listen(PORT, () => console.log(`Server has been started on PORT = ${PORT}`));
 }
 bootstrap();

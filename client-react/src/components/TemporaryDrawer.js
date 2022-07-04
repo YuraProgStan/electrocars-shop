@@ -13,8 +13,9 @@ import styled from 'styled-components';
 
 const StyledMenuIcon = styled(MenuIcon)`
   cursor: pointer;
+  color: ${props => props.theme.colors.buttonBlue};
 `;
-export default function TemporaryDrawer({text,cat}) {
+export default function TemporaryDrawer({cat}) {
 const navigate = useNavigate()
     const [state, setState] = React.useState({
         top: false,

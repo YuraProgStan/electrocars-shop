@@ -1,5 +1,6 @@
 import {IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Length, Min} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
+import {Exclude} from "class-transformer";
 
 
 export class CreateUserDto {

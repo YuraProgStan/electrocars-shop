@@ -26,7 +26,7 @@ const Left = styled.div`
   align-items: center;
 `
 const SearchContainer = styled.span`
-  border: 0.5px solid lightgray;
+  border: 0.5px solid ${props => props.theme.colors.buttonBlue};
   display: flex;
   align-items: center;
   margin-left: 25px;
@@ -35,6 +35,10 @@ const SearchContainer = styled.span`
 const Input = styled.input`
   border: none;
   background-color: ${props => props.theme.colors.light};
+  color:  ${props => props.theme.colors.buttonBlue};
+  &:focus{
+    outline: none;
+  }
 `
 const Center = styled.div`
   flex: 1;
@@ -60,7 +64,7 @@ const Right = styled.div`
 const MenuItem = styled.div`
   font-size: 14px;
   cursor: pointer;
-  color: ${props => props.theme.colors.main};
+  color: ${props => props.theme.colors.buttonBlue};
   &:hover{
     text-decoration: underline;
   }
@@ -68,7 +72,7 @@ const MenuItem = styled.div`
 `
 const LinkStyled = styled(Link)`
     text-decoration: none;
-  color: ${props => props.theme.colors.main}; 
+  color: ${props => props.theme.colors.buttonBlue}; 
   &:hover{
     text-decoration: underline;
   }
@@ -76,11 +80,11 @@ const LinkStyled = styled(Link)`
 const StyledBadge = styled(Badge)({
     "& .MuiBadge-badge": {
         color: `${theme.colors.light}`,
-        backgroundColor: `${theme.colors.main}`
+        backgroundColor: `${theme.colors.buttonBlue}`
     }
 });
 const Navbar = () => {
-    const cat = data.category;
+    const cat = data.brands;
     const quantity = 4
     return (
         <Container>
@@ -89,18 +93,18 @@ const Navbar = () => {
                    <TemporaryDrawer text={'Menu'} cat={cat} />
                     <SearchContainer>
                         <Input placeholder="Search"/>
-                        <Search style={{color: 'gray', fontSize: 16}}/>
+                        <Search style={{color: theme.colors.buttonBlue, fontSize: 16}}/>
                     </SearchContainer>
                 </Left>
                 <Center><Logo to={'/'}>Electrocars</Logo></Center>
                 <Right>
-                    <MenuItem><LinkStyled to = {'/register'}>REGISTER</LinkStyled></MenuItem>
+                    <MenuItem><LinkStyled to = {'/register'}>Register</LinkStyled></MenuItem>
                     <MenuItem><LinkStyled to = {'/login'}>SignIn</LinkStyled></MenuItem>
                     <MenuItem>Logout</MenuItem>
                     <Link to={'/cart'}>
                         <MenuItem>
                             <StyledBadge badgeContent={quantity}>
-                                <ShoppingCartOutlined sx={{color: theme.colors.main}}/>
+                                <ShoppingCartOutlined sx={{color: theme.colors.buttonBlue}}/>
                             </StyledBadge>
                         </MenuItem>
                     </Link>

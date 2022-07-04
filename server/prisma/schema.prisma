@@ -17,7 +17,7 @@ model User {
   password  String
   name      String
   phone     String
-  role      String   @default("user")
+  role      Role     @default(USER)
   avatar    String?  @db.VarChar(255)
   createdAt DateTime @default(now())
   Token     Token[]
@@ -29,4 +29,94 @@ model Token {
   accessToken  String
   user         User   @relation(fields: [userId], references: [id])
   userId       Int
+}
+
+model Brand {
+  id       Int        @id @default(autoincrement())
+  name     String
+  Model    Model[]
+  Wheel    Wheel[]
+  Interior Interior[]
+  colorImg ColorImg[]
+}
+
+model Model {
+  id                Int        @id @default(autoincrement())
+  brand             Brand      @relation(fields: [brandId], references: [id])
+  brandId           Int
+  name              String
+  image             String
+  description       String
+  range             Int
+  rangeUnits        String?    @default(value: "Range (est.)")
+  topSpeed          Int
+  topSpeedUnits     String?    @default("mph")
+  topSpeedDesc      String?    @default("Top Speed")
+  acceleration      Float
+  accelerationUnits String?    @default("sec")
+  accelerationDesc  String?    @default("0-60 mph")
+  price             Int
+  wheels            Wheel[]
+  interior          Interior[]
+  colorImg          ColorImg[]
+}
+
+model Wheel {
+  id          Int        @id @default(autoincrement())
+  model       Model      @relation(fields: [modelId], references: [id])
+  modelId     Int
+  brand       Brand      @relation(fields: [brandId], references: [id])
+  brandId     Int
+  size        Int
+  sizeUnits   String?    @default("inch")
+  image       String
+  markup      Int
+  description String
+  rangeRatio  Int
+  colorImg    ColorImg[]
+}
+
+model Interior {
+  id          Int     @id @default(autoincrement())
+  model       Model   @relation(fields: [modelId], references: [id])
+  modelId     Int
+  brand       Brand   @relation(fields: [brandId], references: [id])
+  brandId     Int
+  image       String
+  markup      Int
+  description String
+  color       Color
+  decor       String? @db.VarChar(255)
+}
+
+model ColorImg {
+  id      Int    @id @default(autoincrement())
+  name    Color  @default(black)
+  model   Model  @relation(fields: [modelId], references: [id])
+  modelId Int
+  brand   Brand  @relation(fields: [brandId], references: [id])
+  brandId Int
+  wheel   Wheel  @relation(fields: [wheelId], references: [id])
+  wheelId Int
+  angle   Angle
+  image   String
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Color {
+  black
+  white
+  grey
+  blue
+  red
+  cream
+}
+
+enum Angle {
+  front
+  back
 }

@@ -36,7 +36,7 @@ function SimpleDialog({onClose, selectedValue, open}) {
             <DialogTitle>Feature description by {selectedValue.brandName} {selectedValue.modelName}</DialogTitle>
             <FeatureDetails>
             <Typography>
-                {selectedValue.description.split("\n").map((item, key) => {
+                {selectedValue.description.split("\\n").map((item, key) => {
                     return <P key={key}>{item}</P>;
                 })}
             </Typography>

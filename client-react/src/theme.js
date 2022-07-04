@@ -12,7 +12,7 @@ export const theme = {
         blue:  {first: '#4477b3', second: '#003b8b'},
         black:  {first: '#474748', second: '#000000'},
         red:  {first: '#ca0119', second: '#8e0007'},
-        crem:  {first: '#efeae5', second: '#c6bbb7'},
+        cream:  {first: '#efeae5', second: '#c6bbb7'},
 
     }
 }

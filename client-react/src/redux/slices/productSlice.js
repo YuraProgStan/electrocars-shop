@@ -23,7 +23,7 @@ const model = createAsyncThunk(
 
 const modelById = createAsyncThunk(
     'productSlice/productModelByIdFetching',
-    async ({id}) => {
+    async (id) => {
         const {data} = await modelService.getById(id);
         return data
     }
@@ -59,12 +59,10 @@ const productSlice = createSlice({
             })
             .addCase(modelById.fulfilled, (state, action) => {
                 const {colorImg, interior, wheels, ...others} = action.payload;
-                console.log('others', others);
                 state.currentModel = {...others};
                 state.colorsImg = colorImg;
                 state.wheels = wheels;
                 state.interior = interior;
-                console.log('wheels', wheels)
                 state.error = false
             })
     }

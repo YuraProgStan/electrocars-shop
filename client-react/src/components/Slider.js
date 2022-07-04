@@ -100,7 +100,7 @@ const Slider = ({findColorsImg, salonImg}) => {
                 {findColorsImg.map(item => (
                     <Slide key={item.id} bg={item.bg}>
                         <ImgContainer>
-                            <Image src={`${process.env.REACT_APP_PUBLIC_URL}/images/${item.image}`} salon={!item.name && true}/>
+                            <Image src={`${process.env.REACT_APP_API}/${item.image}`} salon={!item.name && true}/>
                         </ImgContainer>
                         {/*<InfoContainer>*/}
                         {/*    <Title>{item.title}</Title>*/}

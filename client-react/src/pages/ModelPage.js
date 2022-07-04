@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import {Link, useLocation, useParams} from "react-router-dom";
+import {v4 as uuid} from "uuid"
 import styled, {css} from "styled-components";
-import {data} from "../data";
+
+import {productActions} from "../redux/slices/productSlice";
 import Slider from "../components/Slider";
 import Navbar from "../components/Navbar";
-import {v4 as uuid} from "uuid"
 import FeatureDetailsDialog from "../components/FeatureDetailsDialog";
-import {useDispatch} from "react-redux";
-import {productActions} from "../redux/slices/productSlice";
+import {CircularProgress, Stack} from "@mui/material";
+
 
 const Container = styled.div`
   width: 100vw;
@@ -116,8 +118,8 @@ const Circle = styled.div`
         return props.theme.gradient.black.first;
       case "red":
         return props.theme.gradient.red.first;
-      case "crem":
-        return props.theme.gradient.crem.first;
+      case "cream":
+        return props.theme.gradient.cream.first;
       default:
         return props.theme.gradient.white.first
     }
@@ -134,8 +136,8 @@ const Circle = styled.div`
         return props.theme.gradient.black.second;
       case "red":
         return props.theme.gradient.red.second;
-      case "crem":
-        return props.theme.gradient.crem.second;
+      case "cream":
+        return props.theme.gradient.cream.second;
       default:
         return props.theme.gradient.white.second
     }
@@ -228,37 +230,40 @@ const WheelSpan = styled.span`
 `
 
 const ModelPage = () => {
+    const product = useSelector(state => state.product)
+    const {colorsImg, wheels: wheelByModel, interior, currentModel: modelById, allBrands} = product
+    const colors = {
+        white: "white",
+        black: "black",
+        blue: "blue",
+        red: "red",
+        grey: "grey",
+        cream: "cream"
+    }
     const dispatch = useDispatch();
     const params = useParams();
+    const modelId = Number(params.id)
 
-    let colorsFind = [];
-    const {colorsImg, wheels, interior, model, brands} = data;
     const {pathname} = useLocation();
     const path = pathname.split('/')[1];
-    const brandByModelName = brands.find(item => item.name.toLowerCase() === path);
-    const modelId = pathname.split('/')[2];
-    const wheelByModel = wheels.filter(item => item.modelId === Number(modelId));
-    const modelById = model.find(item => item.id === Number(modelId))
-    const [activeColor, setActiveColor] = useState("white");
-    const [activeInteriorColor, setActiveInteriorColor] = useState("black");
-    const [stateWheelId, setStateWheelId] = useState(wheelByModel[0].id)
-    const [activeWheelsSize, setActiveWheelsSize] = useState(wheelByModel[0].id);
-    const findColorsImg = colorsImg.filter(item => item.name === activeColor && item.modelId === Number(modelId) && item.wheelId === stateWheelId);
-    colorsImg.map(item => item.modelId === Number(modelId) && colorsFind.push(item.name));
-    const [arrayForSlider, setArrayForSlider] = useState(findColorsImg);
-    const interiorFind = interior.filter(item => item.modelId === Number(modelId));
-    const [wheel, setWheel] = useState(wheelByModel[1]);
-    const [stateInterior, setStateInterior] = useState(interiorFind);
+    const brandByModelName = allBrands.find(item => item.name.toLowerCase() === path);
+    const [activeColor, setActiveColor] = useState(colors.white);
+    const [activeInteriorColor, setActiveInteriorColor] = useState(colors.black);
+    const [stateWheelId, setStateWheelId] = useState(null);
+    const [arrayForSlider, setArrayForSlider] = useState([]);
+    const [activeWheelsSize, setActiveWheelsSize] = useState(null);
+    const [stateInterior, setStateInterior] = useState([]);
+    const [wheel, setWheel] = useState(null);
+    const [uniqueColors, setUniqueColors] = useState([])
 
-    // const findBrandId = data.brands.filter(item => item.name.toLowerCase() === path)[0].id;
     const colorHandler = (color) => {
-        const findColorsImgWidthColor = colorsImg.filter(item => item.name === color && item.modelId === Number(modelId) && item.wheelId === Number(stateWheelId));
+        const findColorsImgWidthColor = colorsImg.filter(item => item.name === color && item.modelId === modelId && item.wheelId === Number(stateWheelId));
         setArrayForSlider(findColorsImgWidthColor);
         setActiveColor(color);
     }
     const wheelHandler = (wheelId) => {
         setStateWheelId(wheelId);
-        const findColorsImgWidthWheels = colorsImg.filter(item => item.name === activeColor && item.modelId === Number(modelId) && item.wheelId === Number(wheelId));
+        const findColorsImgWidthWheels = colorsImg.filter(item => item.name === activeColor && item.modelId === modelId && item.wheelId === Number(wheelId));
         setArrayForSlider(findColorsImgWidthWheels);
         setActiveWheelsSize(wheelId);
         const wheelByModelWithWheelId = wheelByModel.find(item => item.id === wheelId);
@@ -266,23 +271,41 @@ const ModelPage = () => {
     }
 
     const interiorHandler = (interId) => {
-        const findInterior = interiorFind.filter(item => item.id === Number(interId));
+        const findInterior = interior.filter(item => item.id === Number(interId));
         setActiveInteriorColor(findInterior[0].color);
         setStateInterior(findInterior);
     }
-    const unique = (arr) => {
-        return Array.from(new Set(arr)); //или [...new Set(arr)]
-    }
-    const uniqueColorsFind = unique(colorsFind);
-    console.log('params', params)
+
+
     useEffect(() => {
-        dispatch(productActions.modelById(params))
-    }, [dispatch])
+        dispatch(productActions.modelById(modelId));
+
+
+    }, [])
+
+    useEffect(() => {
+        if (wheelByModel.length && colorsImg.length) {
+            setStateWheelId(wheelByModel[0].id);
+            setActiveWheelsSize(wheelByModel[0].id);
+            const set = new Set();
+            colorsImg.map(item => item.modelId === modelId && set.add(item.name));
+            setUniqueColors(Array.from(set));
+            setWheel(wheelByModel[1]);
+            setStateInterior(interior)
+            const findColorsImg = colorsImg.filter(item => item.name === activeColor && item.modelId === modelId && item.wheelId === wheelByModel[0].id);
+            setArrayForSlider(findColorsImg)
+        }
+
+    }, [product.wheels, product.colorsImg, product.interior, modelId])
+    if (!modelId) {
+        return null
+    }
+
     return (
         <>
             <Navbar/>
             <Container>
-                <WrapperSlider>
+                {modelById && wheel && colorsImg.length && uniqueColors.length && <><WrapperSlider>
                     <Slider findColorsImg={arrayForSlider} salonImg={stateInterior}/>
                     <BottomDesc>
                         <Price>${(modelById.price + wheel.markup + stateInterior[0].markup).toLocaleString('en-US')}</Price>
@@ -295,76 +318,76 @@ const ModelPage = () => {
                         </WrapButton>
                     </BottomDesc>
                 </WrapperSlider>
-                <Right>
-                    <Title>{modelById.name}</Title>
-                    <FeatureItems>
-                        <FeatureItem>
-                            <FeatureItemData>{modelById.range + wheel.rangeRatio}<FeatureItemDataSpan>{modelById.rangeUnits}</FeatureItemDataSpan></FeatureItemData>
-                            <FeatureItemDesc>{modelById.rangeDesc}</FeatureItemDesc>
-                        </FeatureItem>
-                        <FeatureItem>
-                            <FeatureItemData>{modelById.topSpeed}<FeatureItemDataSpan>{modelById.topSpeedUnits}</FeatureItemDataSpan></FeatureItemData>
-                            <FeatureItemDesc>{modelById.topSpeedDesc}</FeatureItemDesc>
-                        </FeatureItem>
-                        <FeatureItem>
-                            <FeatureItemData>{modelById.acceleration}<FeatureItemDataSpan>{modelById.accelerationUnits}</FeatureItemDataSpan></FeatureItemData>
-                            <FeatureItemDesc>{modelById.accelerationDesc}</FeatureItemDesc>
-                        </FeatureItem>
-                    </FeatureItems>
-                    <FeatureDetails>
-                        {/*<FeatureDetailsButton>Feature Details</FeatureDetailsButton>*/}
-                        <FeatureDetailsDialog description={modelById.description} brandName={brandByModelName.name}
-                                              modelName={modelById.name}/>
-                    </FeatureDetails>
-                    <Features>
-                        <Feature>
-                            <FeatureTitle>Paint</FeatureTitle>
-                            <Circles>
-                                {uniqueColorsFind.map(item => <Circle
-                                    key={uuid()}
-                                    bg={item}
-                                    active={item === activeColor && true}
+                    <Right>
+                        <Title>{modelById.name}</Title>
+                        <FeatureItems>
+                            <FeatureItem>
+                                <FeatureItemData>{modelById.range + wheel.rangeRatio}</FeatureItemData>
+                                <FeatureItemDesc>{modelById.rangeUnits}</FeatureItemDesc>
+                            </FeatureItem>
+                            <FeatureItem>
+                                <FeatureItemData>{modelById.topSpeed}<FeatureItemDataSpan>{modelById.topSpeedUnits}</FeatureItemDataSpan></FeatureItemData>
+                                <FeatureItemDesc>{modelById.topSpeedDesc}</FeatureItemDesc>
+                            </FeatureItem>
+                            <FeatureItem>
+                                <FeatureItemData>{modelById.acceleration}<FeatureItemDataSpan>{modelById.accelerationUnits}</FeatureItemDataSpan></FeatureItemData>
+                                <FeatureItemDesc>{modelById.accelerationDesc}</FeatureItemDesc>
+                            </FeatureItem>
+                        </FeatureItems>
+                        <FeatureDetails>
+                            <FeatureDetailsDialog description={modelById.description} brandName={brandByModelName.name}
+                                                  modelName={modelById.name}/>
+                        </FeatureDetails>
+                        <Features>
+                            <Feature>
+                                <FeatureTitle>Paint</FeatureTitle>
+                                <Circles>
+                                    {uniqueColors.map(item => <Circle
+                                        key={uuid()}
+                                        bg={item}
+                                        active={item === activeColor && true}
 
-                                    onClick={() => {
-                                        colorHandler(item);
-                                    }}
-                                />)}
-                            </Circles>
-                        </Feature>
-                        <Feature>
-                            <FeatureTitle>Wheels</FeatureTitle>
-                            <Wheels>
-                                {wheelByModel.map(item => <Wheel
-                                    img={`${process.env.REACT_APP_PUBLIC_URL}/images/${item.image}`}
-                                    key={item.id}
-                                    active={item.id === activeWheelsSize && true}
-                                    onClick={() => {
-                                        wheelHandler(item.id);
-                                    }}
-                                />)}
-                            </Wheels>
-                            <WheelDesc>
-                                <WheelItem><WheelSpan>{wheel.size}″ {wheel.description} </WheelSpan><WheelSpan
-                                    markup>{wheel.markup === 0 ? 'Included' : `$ ${wheel.markup}`}</WheelSpan></WheelItem>
-                                <WheelFeature>Range (est.): {modelById.range + wheel.rangeRatio}</WheelFeature>
+                                        onClick={() => {
+                                            colorHandler(item);
+                                        }}
+                                    />)}
+                                </Circles>
+                            </Feature>
+                            <Feature>
+                                <FeatureTitle>Wheels</FeatureTitle>
+                                <Wheels>
+                                    {wheelByModel.map(item => <Wheel
+                                        img={`${process.env.REACT_APP_API}/${item.image}`}
+                                        key={item.id}
+                                        active={item.id === activeWheelsSize && true}
+                                        onClick={() => {
+                                            wheelHandler(item.id);
+                                        }}
+                                    />)}
+                                </Wheels>
+                                <WheelDesc>
+                                    <WheelItem><WheelSpan>{wheel.size}{wheel.sizeUnits === 'inch'? '″': wheel.sizeUnits} {wheel.description} </WheelSpan><WheelSpan
+                                        markup>{wheel.markup === 0 ? 'Included' : `$ ${wheel.markup}`}</WheelSpan></WheelItem>
+                                    <WheelFeature>Range (est.): {modelById.range + wheel.rangeRatio}</WheelFeature>
 
-                            </WheelDesc>
-                        </Feature>
-                        <Feature>
-                            <FeatureTitle>Interior</FeatureTitle>
-                            <Circles>
-                                {interiorFind.map(item => <Circle
-                                    bg={item.color}
-                                    key={item.id}
-                                    active={item.color === activeInteriorColor && true}
-                                    onClick={() => {
-                                        interiorHandler(item.id);
-                                    }}
-                                />)}
-                            </Circles>
-                        </Feature>
-                    </Features>
-                </Right>
+                                </WheelDesc>
+                            </Feature>
+                            <Feature>
+                                <FeatureTitle>Interior</FeatureTitle>
+                                <Circles>
+                                    {interior.map(item => <Circle
+                                        bg={item.color}
+                                        key={item.id}
+                                        active={item.color === activeInteriorColor && true}
+                                        onClick={() => {
+                                            interiorHandler(item.id);
+                                        }}
+                                    />)}
+                                </Circles>
+                            </Feature>
+                        </Features>
+                    </Right>
+                </>}
             </Container>
         </>
     );

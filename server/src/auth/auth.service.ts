@@ -44,10 +44,10 @@ export class AuthService {
             const token = this.generateActionToken(user);
 
             await this.mailService.sendUserConfirmation(user, token);
-            return {name: user.name};
+            return {username: user.username};
         } catch (err) {
             console.log(err);
-            return {name: err};
+            return {username: err};
         }
 
     }
@@ -96,7 +96,7 @@ export class AuthService {
 
 
     private generateTokenPair(user) {
-        const payload: TokenUserDto = {email: user.email, id: user.id, name: user.name, role: user.role};
+        const payload: TokenUserDto = {email: user.email, id: user.id, username: user.username, role: user.role};
         const accessToken = this.jwtService.sign(payload,
             {
                 secret: process.env.SECRET_ACCESS_KEY as string,
@@ -115,7 +115,7 @@ export class AuthService {
     }
 
     private generateActionToken(user) {
-        const payload = {email: user.email, id: user.id, name: user.name};
+        const payload = {email: user.email, id: user.id, username: user.username};
         const actionToken = this.jwtService.sign(payload,
             {
                 secret: process.env.SECRET_ACTION_KEY as string,
@@ -148,7 +148,7 @@ export class AuthService {
     //     try {
     //         const token = jwt.split(' ')[1];
     //         const user = await this.jwtService.verify(token, {publicKey: process.env.SECRET_ACCESS_KEY});
-    //         return user.name;
+    //         return user.username;
     //         //return user.role
     //     } catch (e) {
     //         console.log(e);

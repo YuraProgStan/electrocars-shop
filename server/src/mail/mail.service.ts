@@ -16,7 +16,7 @@ export class MailService {
             subject: 'Welcome to Nice App! Confirm your Email',
             template: './confirmation', // `.hbs` extension is appended automatically
             context: { // ✏️ filling curly brackets with content
-                name: user.name,
+                username: user.username,
                 url,
             },
             attachments:[{

@@ -98,7 +98,7 @@ const Navbar = () => {
                 </Left>
                 <Center><Logo to={'/'}>Electrocars</Logo></Center>
                 <Right>
-                    <MenuItem><LinkStyled to = {'/register'}>Register</LinkStyled></MenuItem>
+                    <MenuItem><LinkStyled to = {'/registration'}>Register</LinkStyled></MenuItem>
                     <MenuItem><LinkStyled to = {'/login'}>SignIn</LinkStyled></MenuItem>
                     <MenuItem>Logout</MenuItem>
                     <Link to={'/cart'}>

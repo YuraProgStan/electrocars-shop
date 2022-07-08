@@ -9,6 +9,7 @@ import Slider from "../components/Slider";
 import Navbar from "../components/Navbar";
 import FeatureDetailsDialog from "../components/FeatureDetailsDialog";
 import {CircularProgress, Stack} from "@mui/material";
+import Footer from "../components/Footer";
 
 
 const Container = styled.div`
@@ -389,6 +390,7 @@ const ModelPage = () => {
                     </Right>
                 </>}
             </Container>
+            <Footer/>
         </>
     );
 };

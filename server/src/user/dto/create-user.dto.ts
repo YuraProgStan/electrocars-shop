@@ -5,12 +5,12 @@ import {Exclude} from "class-transformer";
 
 export class CreateUserDto {
     @ApiProperty({
-        example: "Sergiy", description: 'name'
+        example: "Sergiy", description: 'username'
     })
     @IsString()
     @Length(2,10)
     @IsNotEmpty()
-    public name: string;
+    public username: string;
 
     @ApiProperty({
         example: "user@gmail.com", description: 'email'

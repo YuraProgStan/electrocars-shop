@@ -15,7 +15,7 @@ model User {
   email     String   @unique
   status    Boolean? @default(false)
   password  String
-  name      String
+  username  String
   phone     String
   role      Role     @default(USER)
   avatar    String?  @db.VarChar(255)

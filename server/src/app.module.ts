@@ -13,17 +13,17 @@ import { ModelModule } from './model/model.module';
 import { WheelModule } from './wheel/wheel.module';
 import { InteriorModule } from './interior/interior.module';
 import { ColorImgModule } from './color-img/color-img.module';
-import { GoogleController } from './google/google.controller';
-import { GoogleService } from './google/google.service';
-import { GoogleModule } from './google/google.module';
 import configuration from './config/configuration';
+import {ScheduleModule} from "@nestjs/schedule";
 
 @Module({
   imports: [
       ConfigModule.forRoot({
           load: [configuration],
-      }),UserModule, AuthModule, MailModule, BrandModule, ModelModule, WheelModule, InteriorModule, ColorImgModule, GoogleModule],
-  controllers: [AppController, GoogleController],
-  providers: [AppService, GoogleService],
+      }),UserModule, AuthModule, MailModule, BrandModule, ModelModule, WheelModule, InteriorModule, ColorImgModule,
+      ScheduleModule.forRoot()
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

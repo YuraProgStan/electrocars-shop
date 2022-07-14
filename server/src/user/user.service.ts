@@ -1,6 +1,7 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {PrismaService} from "../core/prisma.service";
 import {Prisma, User} from '@prisma/client';
+import {AuthService} from "../auth/auth.service";
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,10 @@ export class UserService {
     }
 
     async createUser(data: Prisma.UserCreateInput): Promise<User> {
+        const findSocialUser = await this.getUserByProfileId(data.profileId);
+            if (findSocialUser) {
+                return findSocialUser;
+            }
         const findUser = await this.getUserByEmail(data.email);
         if (findUser) {
             throw  new HttpException('user is already exist', HttpStatus.BAD_REQUEST)
@@ -30,6 +35,12 @@ export class UserService {
     getUserByEmail(userEmail: string): Promise<User> {
         return this.prismaService.user.findFirst({
             where: {email: userEmail}
+        })
+    }
+
+    getUserByProfileId(profileId: string): Promise<User> {
+        return this.prismaService.user.findFirst({
+            where: {profileId: profileId}
         })
     }
 }

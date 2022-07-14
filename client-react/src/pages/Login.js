@@ -1,10 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
 import {mobile} from "../responsive";
 import {useDispatch, useSelector} from "react-redux";
 import {Link, useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {authActions} from "../redux/slices/authSlice";
 import {LoginValidator} from "../validation";
+import {useForm} from "react-hook-form";
+import {joiResolver} from "@hookform/resolvers/joi";
+import CustomizedSnackbarLogin from "../components/CustomizedSnackbarLogin";
+import * as PropTypes from "prop-types";
+import {Facebook, Google} from "@mui/icons-material";
+import GoogleAuth from "../components/GoogleAuth";
+import FacebookAuth from "../components/FacebookAuth";
 
 
 const Container = styled.div`
@@ -53,8 +60,9 @@ const Button = styled.button`
   margin-bottom: 10px;
 
   &:disabled {
-    color: green;
+    color: white;
     cursor: not-allowed;
+    opacity: 0.3;
   }
 `;
 
@@ -68,58 +76,116 @@ const LinkStyled = styled(Link)`
 const Error = styled.span`
   color: red
 `
-const Login = () => {
-
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const {state} = useLocation();
-    const [query] = useSearchParams()
-    const {loading, error} = useSelector(state => state.user)
-    const handleClick = async (e) => {
-        e.preventDefault();
-        try{
-            await LoginValidator.validateAsync({ email, password });
-            await dispatch(authActions.login({user: {email, password}}));
-            if (state?.pathname) {
-                navigate(state.pathname === 'login' ? '/' : state.pathname, {replace: true})
-            } else {
-                navigate('/');
-            }
-        }
-        catch (err){
-            console.log(err)
-        }
-
-
-
+const Social = styled.div`
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px 10px 5px 40px;
+  gap: 5px;
+  margin: 10px 0;
+  cursor: pointer;
+  background-color: ${props => {
+    switch (props.profile) {
+      case "google":
+        return '#DB4437';
+      case "facebook":
+        return '#4267B2';
+      default:
+        return 'white'
     }
-    useEffect(() => {
-        localStorage.removeItem('access');
-        localStorage.removeItem('refresh');
-        dispatch(authActions.logout());
-    }, [])
+  }
+  }
 
-    useEffect(() => {
-        console.log('session end', !!query.get('ExpSession'));
-    }, [query])
-    return (
-        <Container>
-            <Wrapper>
-                <Title>SIGN IN</Title>
-                <Form>
-                    <Input placeholder="email" onChange={e => setEmail(e.target.value)}/>
-                    <Input type="password" placeholder="password" onChange={e => setPassword(e.target.value)}/>
-                    <Button onClick={handleClick} disabled={loading}>LOGIN</Button>
-                    {error && <Error>Something went wrong...}</Error>}
+`
+const Span = styled.span`
+  color: white;
+`
 
-                    <LinkStyled to={'/register'}>DO NOT REMEMBER THE PASSWORD?</LinkStyled>
-                    <LinkStyled to={'/register'}>CREATE A NEW ACCOUNT</LinkStyled>
-                </Form>
-            </Wrapper>
-        </Container>
-    );
+function CustomizedSnackbarsLogin(props) {
+    return null;
+}
+
+CustomizedSnackbarsLogin.propTypes = {
+    setOpen: PropTypes.func,
+    open: PropTypes.bool
 };
+
+
+const Login = () => {
+        const [stateDisabled, setStateDisabled] = useState(false);
+    const [open, setOpen] = useState(false);
+        const dispatch = useDispatch();
+        const navigate = useNavigate();
+        const {state} = useLocation();
+        // const [query] = useSearchParams()
+        const {loading, error, currentUser} = useSelector(state => state.auth);
+        const handleClick = () => {
+            setOpen(true);
+        };
+        const {register, handleSubmit, watch, reset, formState: {errors}} =
+            useForm({resolver: joiResolver(LoginValidator), mode: 'onTouched'});
+
+        const onSubmit = async (data) => {
+            try {
+
+                await dispatch(authActions.login({user: {email: data.email, password: data.password}}));
+                if (currentUser) {
+                    if (state?.pathname) {
+                        navigate(state.pathname === 'login' ? '/' : state.pathname, {replace: true})
+                    } else {
+                        navigate('/');
+                    }
+
+                }
+            } catch (err) {
+                console.log(err)
+
+            }
+            handleClick();
+            reset();
+        }
+
+
+        // useEffect(() => {
+        //     console.log('session end', !!query.get('ExpSession'));
+        // }, [query])
+        useEffect(() => {
+            if (!errors.email && !errors.password) {
+                setStateDisabled(true);
+            } else {
+                setStateDisabled(false);
+            }
+        }, [errors])
+        return (
+            <Container>
+                <Wrapper>
+                    <Title>SIGN IN</Title>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Input type="text" {...register('email')} placeholder="email"/>
+                        <Input type="password" {...register('password')} placeholder="password"/>
+                        <Button
+
+                            disabled={!stateDisabled || loading}
+                        >LOGIN</Button>
+                        {errors.email && <Error>{errors.email.message}</Error>}
+                        {errors.password && <Error>{errors.password.message}</Error>}
+
+                        <LinkStyled to={'/registration'}>DO NOT REMEMBER THE PASSWORD?</LinkStyled>
+                        <LinkStyled to={'/registration'}>CREATE A NEW ACCOUNT</LinkStyled>
+                        {error && <CustomizedSnackbarLogin setOpen={setOpen} open={open} error={error}/>}
+                    </Form>
+                    {/*<Social  profile={'google'}>*/}
+                        {/*<Google style={{color: 'white'}}/>*/}
+                        <GoogleAuth state={state}/>
+                   <FacebookAuth state={state} />
+                    {/*</Social>*/}
+                    {/*<Social onClick={() => dispatch(authActions.facebookAuth())} profile={'facebook'}><Facebook*/}
+                    {/*    style={{color: 'white'}}/><Span>Facebook</Span></Social>*/}
+                </Wrapper>
+            </Container>
+        );
+    }
+;
 
 export default Login;

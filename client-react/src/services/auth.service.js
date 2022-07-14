@@ -10,4 +10,6 @@ export const authService = {
     me: () => axiosService.get(`${urls.auth}/me`),
     refresh: (refresh) => axiosService.post(`${urls.auth}/refresh`, {refresh}),
     register: (user) => axiosService.post(`${urls.auth}/register`, user),
+    googleAuth: (token) => axiosService.post(`${urls.auth}/google`,{token}),
+    facebookAuth: ({userID, accessToken}) => axiosService.post(`${urls.auth}/facebook`,{userID, accessToken})
 }

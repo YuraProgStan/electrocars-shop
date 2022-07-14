@@ -33,8 +33,7 @@ export class CreateUserDto {
         example: '+380678543210', description: 'phone'
     })
     @IsString()
-    @Length(10,20)
-    @IsNotEmpty()
+    @IsOptional()
     readonly phone: string;
 
     @ApiProperty({
@@ -47,4 +46,18 @@ export class CreateUserDto {
     @IsString()
     @IsOptional()
     public avatar: string;
+
+    @ApiProperty({
+        example: 'google', description: 'profile'
+    })
+    @IsString()
+    @IsOptional()
+    public profile: string;
+
+    @ApiProperty({
+        example: '1', description: 'profileId'
+    })
+    @IsString()
+    @IsOptional()
+    public profileId: string;
 }

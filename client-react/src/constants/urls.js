@@ -8,5 +8,5 @@ export const urls = {
     colorImg: '/color-img',
     interior: '/interior',
     wheel: '/wheel',
-    auth: '/auth'
+    auth: '/auth',
 }

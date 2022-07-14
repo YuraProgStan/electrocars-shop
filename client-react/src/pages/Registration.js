@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from "styled-components";
 import {mobile} from "../responsive";
 import {authActions as authAction} from "../redux/slices/authSlice";
@@ -64,18 +64,21 @@ const Button = styled.button`
 const Error = styled.span`
   color: red
 `
-const initialState = {username: "", password: "", email: "", passwordConfirm: "", phone: ""}
+const initialState = {username: "", password: "", email: "", passwordConfirm: ""}
 const Registration = () => {
         const [state, setState] = useState(initialState);
         const [errors, setErrors] = useState(null);
         const [stateDisabled, setStateDisabled] = useState(false);
         const [open, setOpen] = React.useState(false);
+        const [handleState, setHandleState] = useState(false);
 
         const handleClick = () => {
             setOpen(true);
         };
         const dispatch = useDispatch();
-        const user  = useSelector(state => state.user);
+        const user  = useSelector(state => state.auth);
+
+
 
         const schema = Joi.object({
             username: Joi.string()
@@ -129,9 +132,11 @@ const Registration = () => {
         const handleSubmit = (e) => {
             e.preventDefault();
            dispatch(authAction.registration({user: state}))
-            handleClick()
+            handleClick();
+           setHandleState(true)
             dispatch(authAction.resetUsernameError())
         }
+
 
         return (
             <Container>
@@ -144,9 +149,6 @@ const Registration = () => {
 
                         <Input placeholder="email" type="text" onChange={handleChange} name="email"
                                value={state.email || ''}
-                        />
-                        <Input placeholder="phone" type="text" onChange={handleChange} name="phone"
-                               value={state.phone || ''}
                         />
                         <Input placeholder="password" onChange={handleChange} name="password"
                                value={state.password || ''}
@@ -164,10 +166,9 @@ const Registration = () => {
                         <div>{errors?.username && <Error>{errors.username}</Error>}</div>
                         <div>{errors?.password && <Error>{errors.password}</Error>}</div>
                         <div>{errors?.email && <Error>{errors.email}</Error>}</div>
-                        <div>{errors?.phone && <Error>{errors.phone}</Error>}</div>
                         <div>{errors?.passwordConfirm && !stateDisabled && <Error>{errors.passwordConfirm}</Error>}</div>
                     </Form>
-                    {(user.username || user.error) &&<CustomizedSnackbars setOpen={setOpen} username={user.username} error={user.error} open={open}/>}
+                    {(user?.username || user?.error) &&<CustomizedSnackbars setOpen={setOpen} username={user.username} error={user.error} open={open}/>}
 
                 </Wrapper>
             </Container>

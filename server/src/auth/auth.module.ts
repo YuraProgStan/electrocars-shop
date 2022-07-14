@@ -6,10 +6,11 @@ import {UserService} from "../user/user.service";
 import {PrismaService} from "../core/prisma.service";
 import {MailService} from "../mail/mail.service";
 import {MailModule} from "../mail/mail.module";
+import {HttpModule} from "@nestjs/axios";
 
 @Module({
   providers: [AuthService, UserService, PrismaService, MailService],
   controllers: [AuthController],
-imports: [JwtModule.register({}), MailModule],
+imports: [JwtModule.register({}), MailModule, HttpModule],
 })
 export class AuthModule {}

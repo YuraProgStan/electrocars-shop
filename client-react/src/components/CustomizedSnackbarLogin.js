@@ -7,7 +7,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function CustomizedSnackbars({setOpen, username, error, open}) {
+export default function CustomizedSnackbarLogin({error, open, setOpen}) {
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -20,11 +20,6 @@ export default function CustomizedSnackbars({setOpen, username, error, open}) {
         <Stack spacing={2} sx={{width: '100%'}}>
             {error &&    <Snackbar open={open} autoHideDuration={10000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
                  <Alert onClose={handleClose} severity="error" sx={{width: '100%'}} >{error}</Alert>
-            </Snackbar>}
-            {username && <Snackbar open={open} autoHideDuration={10000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
-                <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
-                    {username}, to complete the registration, follow the link indicated it the email
-                </Alert>
             </Snackbar>}
         </Stack>
     );

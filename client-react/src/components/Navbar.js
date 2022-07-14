@@ -1,18 +1,21 @@
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Badge from '@mui/material/Badge';
 import {Search, ShoppingCartOutlined} from "@mui/icons-material";
 import {theme} from "../theme";
 import TemporaryDrawer from "./TemporaryDrawer";
 import {data} from "../data";
+import {useDispatch, useSelector} from "react-redux";
+import {authActions} from "../redux/slices/authSlice";
+
 const Container = styled.div`
   height: 60px;
   position: fixed;
   width: 100%;
   background-color: ${props => props.theme.colors.light};
   z-index: 200;
-  `;
+`;
 const Wrapper = styled.div`
   padding: 10px 20px;
   display: flex;
@@ -35,8 +38,9 @@ const SearchContainer = styled.span`
 const Input = styled.input`
   border: none;
   background-color: ${props => props.theme.colors.light};
-  color:  ${props => props.theme.colors.buttonBlue};
-  &:focus{
+  color: ${props => props.theme.colors.buttonBlue};
+
+  &:focus {
     outline: none;
   }
 `
@@ -65,18 +69,20 @@ const MenuItem = styled.div`
   font-size: 14px;
   cursor: pointer;
   color: ${props => props.theme.colors.buttonBlue};
-  &:hover{
+
+  &:hover {
     text-decoration: underline;
   }
 
 `
 const LinkStyled = styled(Link)`
-    text-decoration: none;
-  color: ${props => props.theme.colors.buttonBlue}; 
-  &:hover{
+  text-decoration: none;
+  color: ${props => props.theme.colors.buttonBlue};
+
+  &:hover {
     text-decoration: underline;
   }
-  `
+`
 const StyledBadge = styled(Badge)({
     "& .MuiBadge-badge": {
         color: `${theme.colors.light}`,
@@ -84,13 +90,17 @@ const StyledBadge = styled(Badge)({
     }
 });
 const Navbar = () => {
+    const dispatch = useDispatch()
     const cat = data.brands;
-    const quantity = 4
+    const quantity = 4;
+const navigate = useNavigate();
+const {currentUser} = useSelector(state => state.auth)
+
     return (
         <Container>
             <Wrapper>
                 <Left>
-                   <TemporaryDrawer text={'Menu'} cat={cat} />
+                    <TemporaryDrawer text={'Menu'} cat={cat}/>
                     <SearchContainer>
                         <Input placeholder="Search"/>
                         <Search style={{color: theme.colors.buttonBlue, fontSize: 16}}/>
@@ -98,9 +108,16 @@ const Navbar = () => {
                 </Left>
                 <Center><Logo to={'/'}>Electrocars</Logo></Center>
                 <Right>
-                    <MenuItem><LinkStyled to = {'/registration'}>Register</LinkStyled></MenuItem>
-                    <MenuItem><LinkStyled to = {'/login'}>SignIn</LinkStyled></MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    {!currentUser &&
+                    <>
+                        <MenuItem><LinkStyled to={'/registration'}>Register</LinkStyled></MenuItem>
+                        <MenuItem><LinkStyled to={'/login'}>Login</LinkStyled></MenuItem>
+                    </>
+                    }
+                    {currentUser && <MenuItem onClick={() =>{
+                        dispatch(authActions.logout());
+                        navigate('/login')
+                    }}>Logout</MenuItem>}
                     <Link to={'/cart'}>
                         <MenuItem>
                             <StyledBadge badgeContent={quantity}>

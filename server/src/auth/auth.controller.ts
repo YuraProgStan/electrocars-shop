@@ -19,12 +19,11 @@ import {UserService} from "../user/user.service";
 import {OAuth2Client} from "google-auth-library";
 import GoogleTokenDto from "./dto/google-token.dto";
 import FacebookLoginDto from "./dto/facebook-login.dto";
-import {HttpService} from "@nestjs/axios";
 import {lastValueFrom} from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService, private userService: UserService, private httpService: HttpService) {
+    constructor(private authService: AuthService, private userService: UserService) {
     }
 
     @ApiOperation({summary: 'Login user'})

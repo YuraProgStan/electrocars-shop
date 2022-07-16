@@ -10,8 +10,7 @@ import {MailService} from "../mail/mail.service";
 import {RefreshTokenUserDto} from "./dto/refresh-token-user.dto";
 import {Cron} from "@nestjs/schedule";
 import {HttpService} from "@nestjs/axios";
-import {map, Observable} from "rxjs";
-import {AxiosResponse} from 'axios'
+import {Observable} from "rxjs";
 
 
 @Injectable()

@@ -113,7 +113,7 @@ CustomizedSnackbarsLogin.propTypes = {
 
 
 const Login = () => {
-        const [stateDisabled, setStateDisabled] = useState(false);
+        // const [stateDisabled, setStateDisabled] = useState(false);
     const [open, setOpen] = useState(false);
         const dispatch = useDispatch();
         const navigate = useNavigate();
@@ -123,7 +123,7 @@ const Login = () => {
         const handleClick = () => {
             setOpen(true);
         };
-        const {register, handleSubmit, watch, reset, formState: {errors}} =
+        const {register, handleSubmit, reset, formState: {errors, isValid}} =
             useForm({resolver: joiResolver(LoginValidator), mode: 'onTouched'});
 
         const onSubmit = async (data) => {
@@ -150,13 +150,13 @@ const Login = () => {
         // useEffect(() => {
         //     console.log('session end', !!query.get('ExpSession'));
         // }, [query])
-        useEffect(() => {
-            if (!errors.email && !errors.password) {
-                setStateDisabled(true);
-            } else {
-                setStateDisabled(false);
-            }
-        }, [errors])
+        // useEffect(() => {
+        //     if (!errors.email && !errors.password) {
+        //         setStateDisabled(true);
+        //     } else {
+        //         setStateDisabled(false);
+        //     }
+        // }, [errors])
         return (
             <Container>
                 <Wrapper>
@@ -166,7 +166,7 @@ const Login = () => {
                         <Input type="password" {...register('password')} placeholder="password"/>
                         <Button
 
-                            disabled={!stateDisabled || loading}
+                            disabled={!isValid || loading}
                         >LOGIN</Button>
                         {errors.email && <Error>{errors.email.message}</Error>}
                         {errors.password && <Error>{errors.password.message}</Error>}

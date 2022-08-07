@@ -7,6 +7,7 @@ import Registration from "./pages/Registration";
 import ModelPage from "./pages/ModelPage";
 import {useDispatch, useSelector} from "react-redux";
 import {productActions} from "./redux/slices/productSlice";
+import Cart from "./pages/Cart";
 
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
                 )}
                 <Route path={'/login'} element={<Login/>}/>
                 <Route path={'/registration'} element={<Registration/>}/>
+                <Route path={'/cart'} element={<Cart/>}/>
             </Routes>
             }
         </>

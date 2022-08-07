@@ -90,9 +90,10 @@ const StyledBadge = styled(Badge)({
     }
 });
 const Navbar = () => {
+    const {quantity} = useSelector(state => state.cart)
     const dispatch = useDispatch()
     const cat = data.brands;
-    const quantity = 4;
+    // const quantity = 4;
 const navigate = useNavigate();
 const {currentUser} = useSelector(state => state.auth)
 

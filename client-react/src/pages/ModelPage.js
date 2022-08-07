@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Link, useLocation, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {v4 as uuid} from "uuid"
 import styled, {css} from "styled-components";
 
@@ -8,8 +8,10 @@ import {productActions} from "../redux/slices/productSlice";
 import Slider from "../components/Slider";
 import Navbar from "../components/Navbar";
 import FeatureDetailsDialog from "../components/FeatureDetailsDialog";
+import {Add, Remove} from "@mui/icons-material";
 import {CircularProgress, Stack} from "@mui/material";
 import Footer from "../components/Footer";
+import {addProduct} from "../redux/slices/cartSlice";
 
 
 const Container = styled.div`
@@ -180,6 +182,30 @@ const BottomDesc = styled.div`
   border-top-right-radius: 10px;
 
 `
+const AddContainer = styled.div`
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+`;
+const AmountContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+`;
+
+const Amount = styled.span`
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme.colors.buttonBlue};;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
+`;
 const Price = styled.div`
   color: ${props => props.theme.colors.buttonBlue};
   font-size: 26px;
@@ -231,8 +257,8 @@ const WheelSpan = styled.span`
 `
 
 const ModelPage = () => {
-    const product = useSelector(state => state.product)
-    const {colorsImg, wheels: wheelByModel, interior, currentModel: modelById, allBrands} = product
+    const product = useSelector(state => state.product);
+    const {colorsImg, wheels: wheelByModel, interior, currentModel: modelById, allBrands} = product;
     const colors = {
         white: "white",
         black: "black",
@@ -243,7 +269,8 @@ const ModelPage = () => {
     }
     const dispatch = useDispatch();
     const params = useParams();
-    const modelId = Number(params.id)
+    const modelId = Number(params.id);
+    const navigate = useNavigate();
 
     const {pathname} = useLocation();
     const path = pathname.split('/')[1];
@@ -255,7 +282,8 @@ const ModelPage = () => {
     const [activeWheelsSize, setActiveWheelsSize] = useState(null);
     const [stateInterior, setStateInterior] = useState([]);
     const [wheel, setWheel] = useState(null);
-    const [uniqueColors, setUniqueColors] = useState([])
+    const [uniqueColors, setUniqueColors] = useState([]);
+    const [quantity, setQuantity] = useState(1);
 
     const colorHandler = (color) => {
         const findColorsImgWidthColor = colorsImg.filter(item => item.name === color && item.modelId === modelId && item.wheelId === Number(stateWheelId));
@@ -301,7 +329,28 @@ const ModelPage = () => {
     if (!modelId) {
         return null
     }
-
+    const handleQuantity = (type) =>{
+        if(type === "dec"){
+            setQuantity(prev => prev === 1 ? prev : prev - 1)
+            // quantity > 1 && setQuantity( quantity - 1)
+        }else {
+            setQuantity(prev => prev + 1);
+            // setQuantity( quantity + 1)
+        }
+    }
+    const handleClick = () =>{
+        dispatch(addProduct({
+            id:modelById.id,
+            name:modelById.name,
+            price:(modelById.price + wheel.markup + stateInterior[0].markup)*quantity,
+            brand:brandByModelName.name,
+            color: activeColor,
+            interiorColor: activeInteriorColor,
+            wheelsSize:wheel.size,
+            image:arrayForSlider.find(item => item.angle === 'front').image,
+            quantity}));
+        navigate('/cart');
+    }
     return (
         <>
             <Navbar/>
@@ -309,9 +358,16 @@ const ModelPage = () => {
                 {modelById && wheel && colorsImg.length && uniqueColors.length && <><WrapperSlider>
                     <Slider findColorsImg={arrayForSlider} salonImg={stateInterior}/>
                     <BottomDesc>
+                        <AddContainer>
                         <Price>${(modelById.price + wheel.markup + stateInterior[0].markup).toLocaleString('en-US')}</Price>
+                        <AmountContainer>
+                            <Remove onClick={()=> handleQuantity('dec')}/>
+                            <Amount>{quantity}</Amount>
+                            <Add onClick={()=> handleQuantity('inc')}/>
+                        </AmountContainer>
+                        </AddContainer>
                         <WrapButton>
-                            <Button disabled={false}>Add to cart</Button>
+                            <Button onClick={handleClick} disabled={false}>Add to cart</Button>
                             <AuthorizeStatus>You are not authorized for getting access to
                                 cart, go to <StyledLink to={'/registration'}>Register</StyledLink> or <StyledLink
                                     to={'/login'}>Signin</StyledLink>

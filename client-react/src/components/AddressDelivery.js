@@ -7,6 +7,7 @@ import {DeliveryValidator, LoginValidator} from "../validation";
 import {authActions} from "../redux/slices/authSlice";
 import {useDispatch} from "react-redux";
 import {addDeliveryAddress} from "../redux/slices/cartSlice";
+import {countryData} from "../countryData";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -56,6 +57,11 @@ const Button = styled.button`
 const Error = styled.span`
   color: red
 `
+
+const Datalist =styled.datalist`
+`
+const Option = styled.option`
+`
 const AddressDelivery = () => {
     const dispatch = useDispatch();
     const {register, handleSubmit, formState: {errors, isValid}} =
@@ -70,6 +76,7 @@ const AddressDelivery = () => {
                 phone: data.phone,
                 streetAddress: data.streetAddress,
                 aptNumber: data.aptNumber,
+                country:data.country,
                 city: data.city,
                 zip: data.zip,
 
@@ -106,12 +113,26 @@ const AddressDelivery = () => {
                         <Input type="text" {...register('phone')} placeholder="+380674433520"/>
                     </Box>
                 </Group>
+                <Group>
+                <Box>
                 <Label>Street Address</Label>
                 <Input type="text" {...register('streetAddress')} placeholder="37 Some Street"/>
+                </Box>
+                <Box>
+                    <Label>Apt Number</Label>
+                    <Input type="number" {...register('aptNumber')} min="1" placeholder="30"/>
+                </Box>
+                </Group>
                 <Group>
                     <Box>
-                        <Label>Apt Number</Label>
-                        <Input type="number" {...register('aptNumber')} min="1" placeholder="30"/>
+                        <Label>Country</Label>
+                        <Input list="countries" {...register('country')}/>
+                        <Datalist id="countries">
+                            {countryData.map(item=>
+                                <Option key={item} value={item} />
+                           )}
+                        </Datalist>
+
                     </Box>
                     <Box>
                         <Label>City</Label>

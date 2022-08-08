@@ -11,6 +11,7 @@ import CartProduct from "../components/CartProduct";
 import {clearCart} from "../redux/slices/cartSlice";
 import {theme} from "../theme";
 import AddressDelivery from "../components/AddressDelivery";
+import {orderService} from "../services/order.service";
 
 
 const Container = styled.div`
@@ -138,7 +139,6 @@ const Cart = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart);
-    const [stateTotal, setStateTotal] = useState(cart.total);
     // const cart = {
     //     products: [{
     //         id: 1,
@@ -152,7 +152,23 @@ const Cart = () => {
     //         quantity: 1,
     //     }], quantity: 1, total: 95840
     // }
-
+const handleCheckout = async () => {
+    try {
+        const order = {products: [...cart.products],
+            total: cart.total,
+            username: `${cart.delivery.firstName} ${cart.delivery.lastName}`,
+            country: cart.delivery.country,
+            city: cart.delivery.city,
+            streetAddress: cart.delivery.streetAddress,
+            aptNumber:cart.delivery.aptNumber,
+            zip: cart.delivery.zip
+        };
+        await orderService.postOrder(order);
+        navigate('/');
+    }catch (err) {
+        console.log(err);
+    }
+}
     return (
         <Container>
             <Navbar/>
@@ -176,7 +192,9 @@ const Cart = () => {
                 <Bottom>
                     <Info>
                         {cart.products.map(product =>
-                            <CartProduct key={product.id} product={product} setStateTotal={setStateTotal}/>
+                            <CartProduct key={product.id} product={product}
+                                         // setStateTotal={setStateTotal}
+                                         dispatch={dispatch}/>
                         )}
                         <Hr/>
                         <AddressDelivery/>
@@ -197,7 +215,7 @@ const Cart = () => {
                         </SummaryItem>
                         <SummaryItem type="total">
                             <SummaryItemText>Total</SummaryItemText>
-                            <SummaryItemPrice>$ {stateTotal}</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         {cart.delivery
                             ?
@@ -211,6 +229,12 @@ const Cart = () => {
                                 <SummaryItem>
                                     <SummaryItemText>Phone</SummaryItemText>
                                     <SummaryItemPrice>{cart.delivery.phone}</SummaryItemPrice>
+                                </SummaryItem>
+                                <SummaryItem>
+                                    <SummaryItemText>Country</SummaryItemText>
+                                    <SummaryItemPrice>
+                                        {cart.delivery.country}
+                                    </SummaryItemPrice>
                                 </SummaryItem>
                                 <SummaryItem>
                                     <SummaryItemText>City</SummaryItemText>
@@ -229,7 +253,7 @@ const Cart = () => {
                                 <SummaryItemText>Add address for delivery</SummaryItemText>
                             </SummaryItem>
                         }
-                        <TopButton type="filled" disabled={!cart.delivery || !stateTotal}>CHECKOUT NOW</TopButton>
+                        <TopButton onClick={handleCheckout} type="filled" disabled={!cart.delivery || !cart.total}>CHECKOUT NOW</TopButton>
                     </Summary>
                 </Bottom>
             </Wrapper>

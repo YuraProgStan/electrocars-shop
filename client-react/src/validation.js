@@ -69,6 +69,11 @@ export const DeliveryValidator = Joi.object({
         .messages({
             'string.empty': '"apt number" can\'t be an empty field',
         }),
+    country: Joi.string()
+        .regex(/^[[a-zA-ZА-яёЁіІїЇ\s]{3,30}$/).messages({
+            'string.empty': '"country" can\'t be an empty field',
+            'string.pattern.base': '"city" can be letters, 3-30 length',
+        }),
     city: Joi.string()
         .regex(/^[[a-zA-ZА-яёЁіІїЇ\s]{3,30}$/).messages({
             'string.empty': '"city" can\'t be an empty field',

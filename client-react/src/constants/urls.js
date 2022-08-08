@@ -9,4 +9,5 @@ export const urls = {
     interior: '/interior',
     wheel: '/wheel',
     auth: '/auth',
+    order: '/order'
 }

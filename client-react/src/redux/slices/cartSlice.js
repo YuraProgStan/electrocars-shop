@@ -21,9 +21,23 @@ const cartSlice = createSlice({
         },
         addDeliveryAddress: (state, action) =>{
             state.delivery = action.payload;
+        },
+        incrementByProductId:(state, action) =>{
+            const id = action.payload.id;
+            const findIndex = state.products.findIndex(item => item.id === id);
+            state.products[findIndex]= {...state.products[findIndex], quantity:state.products[findIndex].quantity+1};
+            state.total = state.total + state.products[findIndex].price;
+        },
+        decrementByProductId:(state, action) =>{
+            const id = action.payload.id;
+            const findIndex = state.products.findIndex(item => item.id === id);
+            if(state.products[findIndex].quantity > 1){
+            state.products[findIndex]= {...state.products[findIndex], quantity:state.products[findIndex].quantity-1};
+            state.total = state.total - state.products[findIndex].price;
+            }
         }
     }
 })
 const cartReducer = cartSlice.reducer
-export const { addProduct, clearCart, addDeliveryAddress} = cartSlice.actions;
+export const { addProduct, clearCart, addDeliveryAddress, incrementByProductId, decrementByProductId} = cartSlice.actions;
 export default cartReducer

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Add, Remove} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
+import {decrementByProductId, incrementByProductId} from "../redux/slices/cartSlice";
 
 const Product = styled.div`
   display: flex;
@@ -39,41 +40,41 @@ const Circle = styled.div`
   background: radial-gradient(circle at 20px 20px,
   ${props => {
     switch (props.bg) {
-        case "white":
-            return props.theme.gradient.white.first;
-        case "grey":
-            return props.theme.gradient.grey.first;
-        case "blue":
-            return props.theme.gradient.blue.first;
-        case "black":
-            return props.theme.gradient.black.first;
-        case "red":
-            return props.theme.gradient.red.first;
-        case "cream":
-            return props.theme.gradient.cream.first;
-        default:
-            return props.theme.gradient.white.first
+      case "white":
+        return props.theme.gradient.white.first;
+      case "grey":
+        return props.theme.gradient.grey.first;
+      case "blue":
+        return props.theme.gradient.blue.first;
+      case "black":
+        return props.theme.gradient.black.first;
+      case "red":
+        return props.theme.gradient.red.first;
+      case "cream":
+        return props.theme.gradient.cream.first;
+      default:
+        return props.theme.gradient.white.first
     }
-}
-}, ${props => {
+  }
+  }, ${props => {
     switch (props.bg) {
-        case "white":
-            return props.theme.gradient.white.second;
-        case "grey":
-            return props.theme.gradient.grey.second;
-        case "blue":
-            return props.theme.gradient.blue.second;
-        case "black":
-            return props.theme.gradient.black.second;
-        case "red":
-            return props.theme.gradient.red.second;
-        case "cream":
-            return props.theme.gradient.cream.second;
-        default:
-            return props.theme.gradient.white.second
+      case "white":
+        return props.theme.gradient.white.second;
+      case "grey":
+        return props.theme.gradient.grey.second;
+      case "blue":
+        return props.theme.gradient.blue.second;
+      case "black":
+        return props.theme.gradient.black.second;
+      case "red":
+        return props.theme.gradient.red.second;
+      case "cream":
+        return props.theme.gradient.cream.second;
+      default:
+        return props.theme.gradient.white.second
     }
-}
-});
+  }
+  });
 `
 const ProductSize = styled.span``
 const PriceDetail = styled.span`
@@ -99,44 +100,37 @@ const ProductPrice = styled.div`
 
 `
 
-const CartProduct = ({product, setStateTotal}) => {
-    const [quantity, setQuantity] = useState(product.quantity);
-    const navigate = useNavigate()
-    const handleQuantity = (type) =>{
-        if(type === "dec"){
-            quantity > 1 && setStateTotal( prev => prev - product.price);
-            setQuantity(prev => prev === 1 ? prev : prev - 1);
-
-
-        }else {
-            setQuantity(prev => prev + 1);
-            setStateTotal(prev=>prev + product.price);
-            // setQuantity( quantity + 1)
+const CartProduct = ({product, dispatch}) => {
+    const handleQuantity = (type) => {
+        if (type === "dec") {
+            dispatch(decrementByProductId({id: product.id}))
+        } else {
+            dispatch(incrementByProductId({id: product.id}))
         }
     }
     return (
-       <Product>
-           <ProductDetail>
-               <Image
-                   src={`${process.env.REACT_APP_API}/${product.image}`}/>
-               <Details>
-                   <ProductId><b>ID:</b> {product.id}</ProductId>
-                   <ProductName><b>Product:</b> {product.name}</ProductName>
-                   <ProductBrand><b>Brand:</b> {product.brand}</ProductBrand>
-                   <ProductColor><b>Color car:</b> <Circle bg={product.color} /></ProductColor>
-                   <ProductColor><b>Interior color car:</b> <Circle bg={product.interiorColor} /></ProductColor>
-                   <ProductSize><b>Wheels size:</b> {product.wheelsSize}</ProductSize>
-               </Details>
-           </ProductDetail>
-           <PriceDetail>
-               <ProductAmountContainer>
-                   <Remove onClick={()=> handleQuantity('dec')}/>
-                   <ProductAmount>{quantity}</ProductAmount>
-                   <Add onClick={()=> handleQuantity('inc')}/>
-               </ProductAmountContainer>
-               <ProductPrice>$ {product.price * quantity}</ProductPrice>
-           </PriceDetail>
-       </Product>
+        <Product>
+            <ProductDetail>
+                <Image
+                    src={`${process.env.REACT_APP_API}/${product.image}`}/>
+                <Details>
+                    <ProductId><b>ID:</b> {product.id}</ProductId>
+                    <ProductName><b>Product:</b> {product.name}</ProductName>
+                    <ProductBrand><b>Brand:</b> {product.brand}</ProductBrand>
+                    <ProductColor><b>Color car:</b> <Circle bg={product.color}/></ProductColor>
+                    <ProductColor><b>Interior color car:</b> <Circle bg={product.interiorColor}/></ProductColor>
+                    <ProductSize><b>Wheels size:</b> {product.wheelsSize}</ProductSize>
+                </Details>
+            </ProductDetail>
+            <PriceDetail>
+                <ProductAmountContainer>
+                    <Remove onClick={() => handleQuantity('dec')}/>
+                    <ProductAmount>{product.quantity}</ProductAmount>
+                    <Add onClick={() => handleQuantity('inc')}/>
+                </ProductAmountContainer>
+                <ProductPrice>$ {product.price * product.quantity}</ProductPrice>
+            </PriceDetail>
+        </Product>
     );
 };
 

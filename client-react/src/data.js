@@ -125,7 +125,7 @@ export const data = {
         {id: 5, modelId: 2, brandId:1, image: 'model-3-interior-white.jpg', markup: 1000, description: 'Black and White', color: 'white',  decor: null},
         {id: 6, modelId: 3, brandId:1, image: 'model-x-interior-black.jpg', markup: 0, description: 'All Black', color: 'black',  decor: 'Walnut Decor'},
         {id: 7, modelId: 3, brandId:1, image: 'model-x-interior-white.jpg', markup: 2000, description: 'Black and White', color: 'white', decor: 'Ebony Decor'},
-        {id: 8, modelId: 3, brandId:1, image: 'model-x-interior-crem.jpg', markup: 2000, description: 'Cream', color: 'crem',  decor: 'Ebony Decor'},
+        {id: 8, modelId: 3, brandId:1, image: 'model-x-interior-crem.jpg', markup: 2000, description: 'Cream', color: 'cream',  decor: 'Ebony Decor'},
     ],
     colorsImg:[
         {id:1, name: 'white', modelId:1, wheelId:1, angle:'front', image:'tesla-model-s-front-white-19.png'},

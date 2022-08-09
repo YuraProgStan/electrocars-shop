@@ -81,7 +81,6 @@ const Image = styled.img`
 const Slider = ({findColorsImg, salonImg}) => {
 
     findColorsImg = [...findColorsImg,{...salonImg[0], id: uuid()}]
-    console.log(findColorsImg);
     const [slideIndex, setSlideIndex] = useState(0);
     const handleClick = (direction) => {
         if (direction === 'left') {

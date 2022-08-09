@@ -114,7 +114,7 @@ CustomizedSnackbarsLogin.propTypes = {
 
 const Login = () => {
         // const [stateDisabled, setStateDisabled] = useState(false);
-    const [open, setOpen] = useState(false);
+        const [open, setOpen] = useState(false);
         const dispatch = useDispatch();
         const navigate = useNavigate();
         const {state} = useLocation();
@@ -125,26 +125,24 @@ const Login = () => {
         };
         const {register, handleSubmit, reset, formState: {errors, isValid}} =
             useForm({resolver: joiResolver(LoginValidator), mode: 'onTouched'});
+    const onSubmit = async (data) => {
+        try {
 
-        const onSubmit = async (data) => {
-            try {
-
-                await dispatch(authActions.login({user: {email: data.email, password: data.password}}));
-                if (currentUser) {
-                    if (state?.pathname) {
-                        navigate(state.pathname === 'login' ? '/' : state.pathname, {replace: true})
-                    } else {
-                        navigate('/');
-                    }
-
-                }
-            } catch (err) {
-                console.log(err)
-
+            await dispatch(authActions.login({user: {email: data.email, password: data.password}}));
+                if (state?.pathname) {
+                    console.log('path', state.pathname)
+                    navigate(state.pathname === 'login' ? '/' : state.pathname, {replace: true})
+                } else {
+                    navigate('/');
             }
-            handleClick();
-            reset();
+        } catch (err) {
+            console.log(err)
+
         }
+        handleClick();
+        reset();
+    }
+
 
 
         // useEffect(() => {
@@ -176,9 +174,9 @@ const Login = () => {
                         {error && <CustomizedSnackbarLogin setOpen={setOpen} open={open} error={error}/>}
                     </Form>
                     {/*<Social  profile={'google'}>*/}
-                        {/*<Google style={{color: 'white'}}/>*/}
-                        <GoogleAuth state={state}/>
-                   <FacebookAuth state={state} />
+                    {/*<Google style={{color: 'white'}}/>*/}
+                    <GoogleAuth state={state}/>
+                    <FacebookAuth state={state}/>
                     {/*</Social>*/}
                     {/*<Social onClick={() => dispatch(authActions.facebookAuth())} profile={'facebook'}><Facebook*/}
                     {/*    style={{color: 'white'}}/><Span>Facebook</Span></Social>*/}

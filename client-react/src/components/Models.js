@@ -10,7 +10,6 @@ const Container = styled.div`
 `;
 const Models = () => {
     const {allBrands, allModels} = useSelector(state => state.product)
-    console.log(allBrands, allModels)
     const {pathname} = useLocation();
     const path = pathname.split('/')[1];
 

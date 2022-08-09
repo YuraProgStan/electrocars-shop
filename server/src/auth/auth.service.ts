@@ -27,7 +27,9 @@ export class AuthService {
         }
         const tokenPair = this.generateTokenPair(user);
         try {
-            const res = await this.prismaService.token.create({data: {userId: user.id, ...tokenPair}})
+            const res = await this.prismaService.token.create({data: {userId: user.id, ...tokenPair}});
+
+            console.log('token',res);
         } catch (e) {
             throw  new HttpException('something went wrong', HttpStatus.BAD_REQUEST)
         }
@@ -56,20 +58,21 @@ export class AuthService {
     }
 
     async registration(userDto: CreateUserDto) {
-        console.log('--------')
-        console.log(userDto)
-        console.log('--------')
         const findUser = await this.userService.getUserByEmail(userDto.email);
         if (findUser) {
             throw  new HttpException('user is already exist', HttpStatus.BAD_REQUEST)
         }
 
         try {
-            const hashPass = await bcrypt.hash(userDto.password, 7);
-            const user = await this.userService.createUser({...userDto, password: hashPass});
-            console.log('++++++++')
-            console.log(user)
-            console.log('++++++++')
+            const saltRounds = 10
+            const salt = bcrypt.genSaltSync(saltRounds);
+            const hashPass = await bcrypt.hashSync(userDto.password, salt);
+            const data = {
+            ...userDto,
+                password: hashPass
+            };
+            const user = await this.userService.createUser(data);
+
             const token = this.generateActionToken(user);
 
             await this.mailService.sendUserConfirmation(user, token);
@@ -159,6 +162,7 @@ export class AuthService {
         if (userDB.profileId && userDB.profile === 'google') {
             throw new UnauthorizedException({message: 'Wrong email, you are already used it for authorized with google. Status code 401'})
         }
+
         const passEqual = await bcrypt.compare(user.password, userDB.password);
         if (userDB && passEqual) {
             return userDB;

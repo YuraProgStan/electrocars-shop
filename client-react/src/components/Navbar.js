@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, Navigate, useNavigate} from 'react-router-dom';
 import Badge from '@mui/material/Badge';
 import {Search, ShoppingCartOutlined} from "@mui/icons-material";
 import {theme} from "../theme";
@@ -58,10 +58,10 @@ const Logo = styled(Link)`
   font-size: 20px;
   color: ${props => props.theme.colors.main};
   height: 40px;
-  background:  no-repeat left/50px url(${logoUrl});
+  background: no-repeat left/50px url(${logoUrl});
   padding: 15px 0 15px 50px;
   text-transform: uppercase;
-  letter-spacing: .2rem ;
+  letter-spacing: .2rem;
 `
 
 const Right = styled.div`
@@ -101,7 +101,23 @@ const Navbar = () => {
     const dispatch = useDispatch()
     const cat = data.brands;
     const navigate = useNavigate();
-    const {currentUser} = useSelector(state => state.auth)
+    const {currentUser} = useSelector(state => state.auth);
+
+useEffect(() =>{
+    if (!currentUser && localStorage.getItem('access')) {
+        const req = async () => {
+            try {
+                await dispatch(authActions.me());
+            } catch (err) {
+                console.log(err)
+            }
+
+        }
+        req();
+
+    }
+
+},[])
     return (
         <Container>
             <Wrapper>

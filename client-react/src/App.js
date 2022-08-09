@@ -8,6 +8,7 @@ import ModelPage from "./pages/ModelPage";
 import {useDispatch, useSelector} from "react-redux";
 import {productActions} from "./redux/slices/productSlice";
 import Cart from "./pages/Cart";
+import {RequireAuth} from "./hoc/RequireAuth";
 
 
 const App = () => {

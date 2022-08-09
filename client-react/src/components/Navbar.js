@@ -93,10 +93,8 @@ const Navbar = () => {
     const {quantity} = useSelector(state => state.cart)
     const dispatch = useDispatch()
     const cat = data.brands;
-    // const quantity = 4;
-const navigate = useNavigate();
-const {currentUser} = useSelector(state => state.auth)
-
+    const navigate = useNavigate();
+    const {currentUser} = useSelector(state => state.auth)
     return (
         <Container>
             <Wrapper>
@@ -115,7 +113,7 @@ const {currentUser} = useSelector(state => state.auth)
                         <MenuItem><LinkStyled to={'/login'}>Login</LinkStyled></MenuItem>
                     </>
                     }
-                    {currentUser && <MenuItem onClick={() =>{
+                    {currentUser && <MenuItem onClick={() => {
                         dispatch(authActions.logout());
                         navigate('/login')
                     }}>Logout</MenuItem>}

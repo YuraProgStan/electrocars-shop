@@ -161,9 +161,11 @@ const handleCheckout = async () => {
             city: cart.delivery.city,
             streetAddress: cart.delivery.streetAddress,
             aptNumber:cart.delivery.aptNumber,
-            zip: cart.delivery.zip
+            zip: cart.delivery.zip,
+            phone: cart.delivery.phone
         };
         await orderService.postOrder(order);
+        await dispatch(clearCart());
         navigate('/');
     }catch (err) {
         console.log(err);

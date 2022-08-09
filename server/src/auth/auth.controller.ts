@@ -50,6 +50,9 @@ export class AuthController {
     })
     @Post('/register')
     async registration(@Body() userDto: CreateUserDto) {
+        console.log('===========')
+        console.log(userDto)
+        console.log('===========')
         const response = await this.authService.registration(userDto);
 
         return {username: response.username};

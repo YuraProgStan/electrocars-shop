@@ -26,3 +26,9 @@ export enum AngleEnum{
     front = 'front',
     back = 'back'
 }
+
+export enum OrderStatusEnum{
+    pending = 'pending',
+    paid = 'paid',
+    shipped = 'shipped'
+}

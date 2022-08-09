@@ -15,13 +15,15 @@ import { InteriorModule } from './interior/interior.module';
 import { ColorImgModule } from './color-img/color-img.module';
 import configuration from './config/configuration';
 import {ScheduleModule} from "@nestjs/schedule";
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
       ConfigModule.forRoot({
           load: [configuration],
       }),UserModule, AuthModule, MailModule, BrandModule, ModelModule, WheelModule, InteriorModule, ColorImgModule,
-      ScheduleModule.forRoot()
+      ScheduleModule.forRoot(),
+      OrderModule
   ],
   controllers: [AppController],
   providers: [AppService],

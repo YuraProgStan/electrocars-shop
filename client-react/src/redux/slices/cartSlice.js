@@ -35,7 +35,8 @@ const cartSlice = createSlice({
             state.products[findIndex]= {...state.products[findIndex], quantity:state.products[findIndex].quantity-1};
             state.total = state.total - state.products[findIndex].price;
             }
-        }
+        },
+
     }
 })
 const cartReducer = cartSlice.reducer

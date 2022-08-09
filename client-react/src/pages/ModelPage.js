@@ -9,7 +9,6 @@ import Slider from "../components/Slider";
 import Navbar from "../components/Navbar";
 import FeatureDetailsDialog from "../components/FeatureDetailsDialog";
 import {Add, Remove} from "@mui/icons-material";
-import {CircularProgress, Stack} from "@mui/material";
 import Footer from "../components/Footer";
 import {addProduct} from "../redux/slices/cartSlice";
 
@@ -64,15 +63,6 @@ const FeatureDetails = styled.div`
   margin-top: 10px;
   display: flex;
   justify-content: center;
-`
-const FeatureDetailsButton = styled.button`
-  border: none;
-  border-radius: 10px;
-  background: ${props => props.theme.colors.light};
-  color: ${props => props.theme.colors.main};
-  font-size: 16px;
-  padding: 10px;
-  cursor: pointer;
 `
 
 const Features = styled.div`
@@ -351,6 +341,10 @@ const ModelPage = () => {
             quantity}));
         navigate('/cart');
     }
+
+    console.log('--------------------')
+    console.log(localStorage.getItem('access'))
+    console.log('--------------------')
     return (
         <>
             <Navbar/>
@@ -367,7 +361,7 @@ const ModelPage = () => {
                         </AmountContainer>
                         </AddContainer>
                         <WrapButton>
-                            <Button onClick={handleClick} disabled={false}>Add to cart</Button>
+                            <Button onClick={handleClick} disabled={!localStorage.getItem('access')}>Add to cart</Button>
                             <AuthorizeStatus>You are not authorized for getting access to
                                 cart, go to <StyledLink to={'/registration'}>Register</StyledLink> or <StyledLink
                                     to={'/login'}>Signin</StyledLink>

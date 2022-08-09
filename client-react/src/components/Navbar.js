@@ -9,6 +9,8 @@ import {data} from "../data";
 import {useDispatch, useSelector} from "react-redux";
 import {authActions} from "../redux/slices/authSlice";
 
+const logoUrl = `${process.env.REACT_APP_API}/logo.png`;
+
 const Container = styled.div`
   height: 60px;
   position: fixed;
@@ -17,7 +19,7 @@ const Container = styled.div`
   z-index: 200;
 `;
 const Wrapper = styled.div`
-  padding: 10px 20px;
+  padding: 5px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -54,7 +56,12 @@ const Logo = styled(Link)`
   cursor: pointer;
   text-decoration: none;
   font-size: 20px;
-  color: teal;
+  color: ${props => props.theme.colors.main};
+  height: 40px;
+  background:  no-repeat left/50px url(${logoUrl});
+  padding: 15px 0 15px 50px;
+  text-transform: uppercase;
+  letter-spacing: .2rem ;
 `
 
 const Right = styled.div`

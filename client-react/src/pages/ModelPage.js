@@ -332,19 +332,16 @@ const ModelPage = () => {
         dispatch(addProduct({
             id:modelById.id,
             name:modelById.name,
-            price:(modelById.price + wheel.markup + stateInterior[0].markup)*quantity,
+            price:modelById.price + wheel.markup + stateInterior[0].markup,
             brand:brandByModelName.name,
             color: activeColor,
             interiorColor: activeInteriorColor,
             wheelsSize:wheel.size,
             image:arrayForSlider.find(item => item.angle === 'front').image,
-            quantity}));
+            quantity:quantity}));
         navigate('/cart');
     }
 
-    console.log('--------------------')
-    console.log(localStorage.getItem('access'))
-    console.log('--------------------')
     return (
         <>
             <Navbar/>

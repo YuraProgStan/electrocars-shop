@@ -32,3 +32,8 @@ export enum OrderStatusEnum{
     paid = 'paid',
     shipped = 'shipped'
 }
+
+export enum UpdateStatusEnum {
+    pending = 'false',
+    active = 'true',
+}

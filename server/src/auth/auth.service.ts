@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable, UnauthorizedException} from '@nestjs/common';
+import {forwardRef, HttpException, HttpStatus, Inject, Injectable, UnauthorizedException} from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
 import * as bcrypt from 'bcrypt';
 import {UserService} from "../user/user.service";
@@ -15,7 +15,9 @@ import {Observable} from "rxjs";
 
 @Injectable()
 export class AuthService {
-    constructor(private jwtService: JwtService, private userService: UserService,
+    constructor(private jwtService: JwtService,
+                @Inject(forwardRef(() =>UserService))
+                private userService: UserService,
                 private prismaService: PrismaService, private mailService: MailService,
                 private httpService: HttpService) {
     }
@@ -64,23 +66,27 @@ export class AuthService {
         }
 
         try {
-            const saltRounds = 10
-            const salt = bcrypt.genSaltSync(saltRounds);
-            const hashPass = await bcrypt.hashSync(userDto.password, salt);
+            // const saltRounds = 10
+            // const salt = bcrypt.genSaltSync(saltRounds);
+            // const hashPass = await bcrypt.hashSync(userDto.password, salt);
+            const hashPass = this.hashPassword(userDto.password)
             const data = {
             ...userDto,
                 password: hashPass
             };
             const user = await this.userService.createUser(data);
-
             const token = this.generateActionToken(user);
-
             await this.mailService.sendUserConfirmation(user, token);
             return {username: user.username};
         } catch (err) {
             return {username: err};
         }
 
+    }
+    hashPassword(password){
+        const saltRounds = 10
+        const salt = bcrypt.genSaltSync(saltRounds);
+        return bcrypt.hashSync(password, salt);
     }
 
     async confirm(token: string, res) {
@@ -145,7 +151,7 @@ export class AuthService {
         };
     }
 
-    private generateActionToken(user) {
+    generateActionToken(user) {
         const payload = {email: user.email, id: user.id, username: user.username};
         const actionToken = this.jwtService.sign(payload,
             {

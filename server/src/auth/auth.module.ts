@@ -8,12 +8,15 @@ import {MailService} from "../mail/mail.service";
 import {MailModule} from "../mail/mail.module";
 import {HttpModule} from "@nestjs/axios";
 import {OrderModule} from "../order/order.module";
+import {UserModule} from "../user/user.module";
 
 @Module({
-  providers: [AuthService, UserService, PrismaService, MailService],
+  imports: [JwtModule.register({}), MailModule, HttpModule,
+    // forwardRef(() => OrderModule)
+  ],
+  providers: [AuthService, PrismaService, UserService,MailService],
   controllers: [AuthController],
-imports: [JwtModule.register({}), MailModule, HttpModule,
-  // forwardRef(() => OrderModule)
-],
+  exports: [AuthService]
+
 })
 export class AuthModule {}

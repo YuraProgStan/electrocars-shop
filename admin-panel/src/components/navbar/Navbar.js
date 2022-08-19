@@ -7,7 +7,7 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ListIcon from '@mui/icons-material/List';
-import srsAvatar from '../../images/avatars/avatar1.png'
+import srcAvatar from '../../images/avatars/avatar1.png'
 import {DarkModeContext} from "../../context/darkModeContext";
 
 const Navbar = () => {
@@ -42,7 +42,7 @@ const Navbar = () => {
                         <ListIcon className={'icon'} />
                     </div>
                     <div className="item">
-                        <img src={srsAvatar} alt="" className={'avatar'} />
+                        <img src={srcAvatar} alt="" className={'avatar'} />
                     </div>
                 </div>
             </div>

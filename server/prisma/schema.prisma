@@ -33,7 +33,7 @@ model Token {
   accessToken  String?  @db.VarChar(500)
   actionToken  String?  @db.VarChar(500)
   status       Boolean? @default(true)
-  user         User     @relation(fields: [userId], references: [id])
+  user         Brand     @relation(fields: [userId], references: [id])
   createdAt    DateTime @default(now())
   userId       Int
 }
@@ -42,7 +42,7 @@ model SocialToken {
   id           Int     @id @default(autoincrement())
   refreshToken String? @db.VarChar(255)
   accessToken  String
-  user         User    @relation(fields: [userId], references: [id])
+  user         Brand    @relation(fields: [userId], references: [id])
   userId       Int
 }
 
@@ -121,7 +121,7 @@ model ColorImg {
 model Order {
   id            Int            @id @default(autoincrement())
   orderNumber   String
-  user          User           @relation(fields: [userId], references: [id])
+  user          Brand           @relation(fields: [userId], references: [id])
   userId        Int
   username      String
   total         Int

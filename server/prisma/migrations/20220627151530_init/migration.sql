@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE "Brand" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "status" BOOLEAN DEFAULT false,
@@ -14,4 +14,4 @@ CREATE TABLE "User" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "User_email_key" ON "Brand"("email");

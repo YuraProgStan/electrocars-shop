@@ -23,7 +23,7 @@ import { OrderModule } from './order/order.module';
           load: [configuration],
       }),UserModule, AuthModule, MailModule, BrandModule, ModelModule, WheelModule, InteriorModule, ColorImgModule,
       ScheduleModule.forRoot(),
-      OrderModule
+      OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

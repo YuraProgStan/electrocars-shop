@@ -13,6 +13,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {Link} from "react-router-dom";
 import {DarkModeContext} from "../../context/darkModeContext";
+import {ElectricCar, ElectricCarOutlined} from "@mui/icons-material";
 
 const Sidebar = () => {
     const {dispatch} = useContext(DarkModeContext);
@@ -36,7 +37,18 @@ const Sidebar = () => {
                             <PersonOutlineIcon className={'icon'}/>
                             <span>Users</span>
                         </li>
-
+                    </Link>
+                    <Link to={'/brands'} style={{textDecoration: 'none'}}>
+                        <li>
+                            <ElectricCar className={'icon'}/>
+                            <span>Brands</span>
+                        </li>
+                    </Link>
+                    <Link to={'/models'} style={{textDecoration: 'none'}}>
+                        <li>
+                            <ElectricCarOutlined className={'icon'}/>
+                            <span>Models</span>
+                        </li>
                     </Link>
                     <Link to={'/products'} style={{textDecoration: 'none'}}>
                         <li>

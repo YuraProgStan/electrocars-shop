@@ -43,6 +43,75 @@ export const userInputs = [
 
 ];
 
+export const modelInputs = [
+    {
+            id: 1,
+        label: "Name",
+        type: "text",
+        placeholder: "Model S",
+        name: "name"
+    },
+    {
+        id: 2,
+        label: "Range",
+        type: "number",
+        placeholder: "100",
+        name: "range"
+    },
+    {
+        id: 3,
+        label: "Range Units",
+        type: "text",
+        placeholder: "Range (est.)",
+        name: "rangeUnits"
+    },
+    {
+        id: 4,
+        label: "Top speed",
+        type: "number",
+        placeholder: "200",
+        name: "password"
+    },
+    {
+        id: 5,
+        label: "Top speed Units",
+        type: "text",
+        placeholder: "mph",
+        name: "topSpeedUnits "
+    },
+    {
+        id: 6,
+        label: "Acceleration",
+        type: "number",
+        placeholder: "3.1",
+        name: "acceleration ",
+        step: "0.1"
+    },
+    {
+        id: 7,
+        label: "Acceleration Units",
+        type: "text",
+        placeholder: "sec",
+        name: "accelerationUnits"
+    },
+    {
+        id: 8,
+        label: "Acceleration Desc",
+        type: "text",
+        placeholder: "0-60 mph",
+        name: "accelerationDesc"
+    },
+    {
+        id: 9,
+        label: "Acceleration Desc",
+        type: "number",
+        placeholder: "50000",
+        name: "price"
+    },
+
+
+];
+
 export const brandInputs = [
     {
         id: 1,

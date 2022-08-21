@@ -168,3 +168,40 @@ export const UserCreateValidator = Joi.object({
 
             }),
     })
+
+
+export const ModelCreateValidator = Joi.object({
+
+    username: Joi.string()
+        .regex(/^[a-zA-ZА-яёЁіІїЇ0-9]{2,30}$/).messages({
+            'string.empty': '"username" can\'t be an empty field',
+            'string.pattern.base': '"username" can be letters, 2-30 length',
+
+        }),
+    email: Joi.string()
+        .email({minDomainSegments: 2, tlds: {allow: ['com', 'net']}}).messages({
+            'string.empty': '"email" can\'t be empty',
+            'string.email': 'Not allowed email'
+        }),
+    phone: Joi.string().optional()
+        .regex(/^\+?[1-9][0-9]{7,14}$/).messages({
+            'string.pattern.base': '"phone" cab be numbers 7-14 length'
+        }).allow('', null),
+    status: Joi.boolean(),
+    role: Joi.string().optional()
+        .valid('USER', 'ADMIN').allow('', null),
+    /*
+    const SomeEnumType = { TypeA: 'A', TypeB: 'B' };
+    type: Joi.string().valid(...Object.values(SomeEnumType)),
+     */
+    password: Joi.string()
+        .regex(/^[a-zA-Z0-9]{5,30}$/).messages({
+            'string.empty': '"password" can\'t be empty',
+            'string.pattern.base': '"password" cab be numbers and letters, 5-30 length'
+
+        }),
+    confirmPassword: Joi.string()
+        .valid(Joi.ref('password')).messages({
+            'any.only': '"confirm password" should be equal password'
+        })
+})

@@ -11,4 +11,6 @@ export const urls = {
     auth: '/auth',
     order: '/order',
     user: '/user',
+    uploadImage: '/uploadimage',
+    removeImage: '/removeimage'
 }

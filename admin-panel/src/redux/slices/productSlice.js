@@ -22,6 +22,8 @@ const delBrandById = createAsyncThunk(
     }
 )
 
+
+
 const updateBrandById = createAsyncThunk(
     'productSlice/brandThunkUpdateFetching',
     async (item) => {
@@ -61,7 +63,8 @@ const initialState = {
     interior: [],
     colorsImg: [],
     loading: false,
-    error: false
+    error: false,
+    tempImageFr: [],
 }
 
 const productSlice = createSlice({
@@ -70,14 +73,20 @@ const productSlice = createSlice({
     reducers: {
         getModelByBrandName(state, action) {
 
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(brand.fulfilled, (state, action) => {
-                state.allBrands = action.payload;
+            .addCase(brand.pending, (state) => {
+                state.loading = true;
                 state.error = false
             })
+            .addCase(brand.fulfilled, (state, action) => {
+                state.allBrands = action.payload;
+                state.loading = false;
+                state.error = false
+            })
+
             .addCase(model.fulfilled, (state, action) => {
                 state.allModels = action.payload;
                 state.error = false

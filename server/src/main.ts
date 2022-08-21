@@ -10,7 +10,7 @@ dotenv.config();
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {cors: true});
   app.useGlobalPipes(new ValidationPipe())
   app.setGlobalPrefix('api');
   app.useStaticAssets(join(__dirname, '..', 'images'));
@@ -26,7 +26,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/swagger',  app, document);
 
-  app.enableCors();
+  // app.enableCors();
   await app.listen(PORT, () => console.log(`Server has been started on PORT = ${PORT}`));
 }
 bootstrap();

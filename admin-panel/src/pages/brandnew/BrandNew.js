@@ -19,6 +19,8 @@ const BrandNew = () => {
     const navigate = useNavigate();
 
 
+
+
     const {register, handleSubmit, formState: {errors, isValid}} =
         useForm({resolver: joiResolver(BrandValidator), mode: 'onTouched'});
 
@@ -50,7 +52,9 @@ const BrandNew = () => {
                             {brandInputs.map(input => (
                                 <div className="formInput" key={input.id}>
                                     <label>{input.label}</label>
-                                    <input type={input.type} {...register(input.name)} placeholder={input.placeholder}/>
+                                    <input type={input.type} {...register(input.name)}
+                                           placeholder={input.placeholder}
+                                       />
                                     {errors[input.name] && <Error>{errors[input.name].message}</Error>}
                                 </div>
                             ))}

@@ -14,6 +14,7 @@ import User from "./pages/user/User";
 import UserNew from "./pages/usernew/UserNew";
 import Brand from "./pages/brand/Brand";
 import BrandNew from "./pages/brandnew/BrandNew";
+import ModelNew from "./pages/modelnew/ModelNew";
 
 const App = () => {
 const {darkMode} = useContext(DarkModeContext);
@@ -38,7 +39,7 @@ const {darkMode} = useContext(DarkModeContext);
                         <Route path='models'>
                             <Route index element={<List type={'models'}/>}/>
                             {/*<Route path=':brandId' element={<Brand/>}/>*/}
-                            {/*<Route path='new' element={<BrandNew/>}/>*/}
+                            <Route path='new' element={<ModelNew/>}/>
                         </Route>
 
                         {/*<Route path='products'>*/}

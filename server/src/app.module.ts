@@ -16,6 +16,8 @@ import { ColorImgModule } from './color-img/color-img.module';
 import configuration from './config/configuration';
 import {ScheduleModule} from "@nestjs/schedule";
 import { OrderModule } from './order/order.module';
+import { UploadimageModule } from './uploadimage/uploadimage.module';
+import { RemoveimageModule } from './removeimage/removeimage.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { OrderModule } from './order/order.module';
       }),UserModule, AuthModule, MailModule, BrandModule, ModelModule, WheelModule, InteriorModule, ColorImgModule,
       ScheduleModule.forRoot(),
       OrderModule,
+      UploadimageModule,
+      RemoveimageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
